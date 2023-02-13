@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>观察者模式, 发布订阅模式</title>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+            border-radius: 10px;
+            transform: rotate(10deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div onclick="handleClick()">
+        1
+    </div>
+    <my-com></my-com>
+    <script>
+
+
+
+
+
+        class EventEmitter {
+            constructor() {
+                // 事件对象，存放订阅的名字和事件
+                this.events = {};
+            }
+            // 订阅事件的方法
+            on(eventName, callback) {
+                // 如果事件对象中没有这个事件
+                if (!this.events[eventName]) {
+                    // 以数组的形式存放，方便后续的存放
+                    this.events[eventName] = [callback];
+                } else {
+                    this.events[eventName].push(callback);
+                }
+            }
+            // 触发事件的方法
+            emit(eventName) {
+                // 如果这个事件名存在的话，则执行对应事件数组的所有事件
+                this.events[eventName] && this.events[eventName].forEach(cb => cb());
+            }
+        }
+        let em = new EventEmitter();
+        function workDay() {
+            console.log("日事日毕，绝不拖延~");
+            // document.write("日事日毕，绝不拖延~")
+        }
+        function makeMoney() {
+            console.log("工作挣钱");
+        }
+        function sayLove() {
+            console.log("love");
+        }
+        em.on("money", makeMoney);
+        em.on("love", sayLove);
+        em.on("work", workDay);
+        em.on("work", makeMoney);
+
+
+        // em.emit("money");
+        // em.emit("love");
+        // em.emit("work");
+
+
+
+        // // 被观察者
+        // class Subject {
+        //     constructor(name) {
+        //         this.state = '开心';
+        //         // 存储所有的观察者
+        //         this.observers = [];
+        //     }
+        //     // 收集所有的观察者
+        //     attach(o) {
+        //         this.observers.push(o);
+        //     }
+        //     // 状态更新时，更新状态并通知所有的观察者
+        //     setState(newState) {
+        //         this.state = newState;
+        //         this.observers.forEach(item => item.update(this));
+        //     }
+        // }
+
+        // // 观察者
+        // class Observer {
+        //     constructor(name) {
+        //         this.name = name;
+        //     }
+        //     // 接受被观察者通知的函数
+        //     update(student) {
+        //         console.log('观察者：' + this.name + '被观察者现在的状态是：' + student.state);
+        //     }
+        // }
+
+        // let student = new Subject('学生');
+
+        // let parent = new Observer('父母');
+        // let teacher = new Observer('老师');
+
+        // // 被观察者存储观察者的前提，需要先接纳观察者
+        // student.attach(parent);
+        // student.attach(teacher);
+        // student.setState('正在好好学习~');
+        // student.setState('天天向上~');
+
+        function handleClick() {
+            em.emit("work");
+        }
+
+        // 单例模式
+        //透明板单列模式
+
+        const Singleton = (function () {
+            let instance = null
+            //实现一个简单的类
+            function createDiv(html) {
+                if (instance) {
+                    return instance
+                }
+                this.html = html
+
+                return instance = this
+            }
+            createDiv.prototype.init = function () {
+                let div = document.createElement('div')
+                div.innerHTML = this.html
+                document.body.append(div)
+            }
+
+            return createDiv
+        })()
+        const A = new Singleton('A')
+        const B = new Singleton('B')
+        console.log(A , B); //true
+        // es6方法实现方式
+
+        // class Singleton {
+        //     constructor(name) {
+        //         this.name = name;
+        //         this.instance = null;
+        //     }
+        //     // 构造一个广为人知的接口，供用户对该类进行实例化
+        //     static getInstance(name) {
+        //         if (!this.instance) {
+        //             this.instance = new Singleton(name);
+        //         }
+        //         return this.instance;
+        //     }
+        // }
+
+
+        B.init()
+
+
+
+        let template = document.createElement('template');
+        template.innerHTML = `
+        <div>
+            我是洪帮反贼，我要杀光所有清狗
+        </div>
+        <style>
+            div {
+                background-color: skyblue;
+            }
+        </style>
+    `;
+        class MyCom extends HTMLElement {
+            constructor() {
+                super();
+                console.log(this); //this -> my-com
+                //影子DOM  attachShadow
+                let _sd = this.attachShadow({ mode: 'open' });
+                //Element.attachShadow()方法将影子DOM树附加到指定的元素，并返回对其的引用ShadowRoot 
+                _sd.appendChild(template.content.cloneNode(true));
+                //content返回template模板中所有内容
+            }
+        }
+        customElements.define('my-com', MyCom);
+
+    </script>
+</body>
+
+</html>

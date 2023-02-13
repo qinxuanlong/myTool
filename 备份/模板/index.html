@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>格式化</title>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+  <!-- 新 Bootstrap5 核心 CSS 文件 -->
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+
+  <!--  popper.min.js 用于弹窗、提示、下拉菜单 -->
+  <script src="https://cdn.staticfile.org/popper.js/2.9.3/umd/popper.min.js"></script>
+
+  <!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.min.js"></script>
+  <!-- <script>hljs.initHighlightingOnLoad();</script> -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
+  <script src="./index.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      display: flex;
+      /* margin-top: 10px; */
+    }
+
+    .box div {
+      flex: 1;
+      padding: 20px 20px 20px 20px;
+
+    }
+
+    textarea,
+    pre,
+    #pre {
+      width: 100%;
+      height: 100vh;
+      outline: none;
+      border: 1px solid #3e3e3e;
+      /* background-color: #333; */
+    }
+
+    .header {
+      height: 60px;
+      line-height: 60px;
+      background: #0066b8;
+      padding: 0 20px;
+    }
+
+    .htmlbox {
+      padding: 20px 20px 20px 20px;
+    }
+
+    #copy {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div class="header">
+      <div class="btn btn-primary" onclick="copyText()">复制</div>
+      <div class="btn btn-primary" onclick="test()">转化</div>
+    </div>
+    <div class="box">
+      <div>
+        <textarea id="txt"></textarea>
+      </div>
+      <div>
+        <pre class="javascript" id="pre">
+        </pre>
+      </div>
+    </div>
+    <div class="htmlbox">
+      <pre class="html" id="html">
+      </pre>
+    </div>
+    <input id="copy" type="text" />
+  </div>
+  <script>
+    //按键触发
+    document.onkeydown = function () {
+      //禁止ctrl+s
+      if (event.ctrlKey && window.event.keyCode == 83) {
+        return false;
+      }
+    }
+
+  </script>
+
+
+
+  <script>
+  
+
+    function randomRangeId() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return 't' + s4() + s4() + '_' + s4()
+
+    }
+
+    var pre = document.getElementById('pre')
+    var html = document.getElementById('html')
+    txt.value = `
+      name string 名字(1测试一2测试二)
+`
+ 
+
+    function test() {
+      let data =  read(txt.value)
+      console.log(data);
+      pre.innerText = data.jstxt
+      //  js_beautify(shuchu, {
+      //   indent_size: 2,
+      //   space_in_empty_paren: true
+      // })
+      html.innerText = html_beautify(data.template, {
+        indent_size: 2,
+        space_in_empty_paren: true
+      })
+      // console.log(' hljs.highlightAuto(shuchu)', html_beautify(htmlText, {
+      //   indent_size: 2,
+      //   space_in_empty_paren: true
+      // })); 
+      $('pre').each(function (i, block) {
+        console.log(block, '$$$');
+        hljs.highlightBlock(block);
+      });
+    }
+
+
+
+
+    function copyText() {
+      var text = document.getElementById("pre").innerText;
+      var input = document.getElementById("copy");
+      input.value = text; // 修改文本框的内容
+      input.select(); // 选中文本
+      document.execCommand("copy"); // 执行浏览器复制命令
+      alert("复制成功");
+    }
+  </script>
+</body>
+
+</html>

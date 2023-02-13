@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>格式化 vscode 模板</title>
+  <style>
+    .box {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    textarea,
+    pre {
+      width: 50%;
+      height: 100vh;
+    }
+
+    .buttonbox {
+      /* position: fixed;
+      left: 0;
+      top: 0px; */
+    }
+
+    #copy {
+      /* display: none; */
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div class="buttonbox">
+      <button onclick="copyText()">复制</button>
+      <button onclick="test()">转化</button>
+    </div>
+    <div class="box">
+      <textarea id="txt"></textarea>
+      <pre id="pre"></pre>
+     
+    </div>
+    <input id="copy" type="text" />
+  </div>
+
+  <script>
+    var txt = document.getElementById('txt')
+    var pre = document.getElementById('pre')
+
+    function test() {
+      console.log('txt', txt.value)
+      pre.innerText = JSON.stringify(txt.value)
+    }
+
+    function copyText() {
+      var text = document.getElementById("pre").innerText;
+      var input = document.getElementById("copy");
+      input.value = text; // 修改文本框的内容
+      input.select(); // 选中文本
+      document.execCommand("copy"); // 执行浏览器复制命令
+      alert("复制成功");
+    }
+  </script>
+</body>
+
+</html>

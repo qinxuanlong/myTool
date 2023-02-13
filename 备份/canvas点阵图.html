@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <input type="file" onchange="previewFile()"><br>
+    <img src="" alt="Image preview...">
+    <div id="show"></div>
+    <script>
+        function previewFile() {
+            var show = document.getElementById('show')
+            var preview = document.querySelector('img');
+            var file = document.querySelector('input[type=file]').files[0];
+            var reader = new FileReader();
+            console.log(file);
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            // const canvas =  document.createElement('canvas');
+
+            preview.onload = function () {
+                const that = this
+                // 默认按比例压缩
+                let w = that.width
+                let h = that.height
+
+
+                // const scale = w / h
+                // w = w
+                // h = (w / scale)
+                let quality = 0.7 // 默认图片质量为0.7
+                // 生成canvas
+                const canvas = document.createElement('canvas')
+                const ctx = canvas.getContext('2d')
+                // 创建属性节点
+                canvas.width = w
+                canvas.height = h
+                // console.log(preview,that);
+                ctx.drawImage(that, 0, 0, w, h)
+
+
+                let x = canvas.width
+                let y = canvas.height
+                let pixels = ctx.getImageData(0, 0, x, y);
+                let pixeldata = pixels.data;
+                for (var i = 0; i < pixeldata.length; i += 4) {
+                    let gray = parseInt(pixels.data[i] * 0.3 + pixels.data[i + 1] * 0.59 + pixels.data[i + 2] * 0.11);
+                    pixels.data[i] = gray;
+                    pixels.data[i + 1] = gray;
+                    pixels.data[i + 2] = gray;
+                    pixels.data[i + 3] = 255;
+                }
+                ctx.putImageData(pixels, 0, 0);
+
+                // this.ca2 =''
+
+                // for (let i = 0; i < h; i += 1) {
+                //     for (let j = 0; j < w; j += 1) {
+                //         let b = ctx.getImageData(j, i, 1, 1).data
+                //         console.log(b)
+                //         if(b[0]* 0.299+b[1]*0.587+b[2]* 0.114>=225){
+                //             // 浅色
+                //             this.ca2+='➀'
+                //         }
+                //         else{
+                //             // 深色
+                //             this.ca2+='➊'
+                //         }
+
+                //     }
+                //     this.ca2+='<br/>'
+                // }
+
+                // show.style.Text = `width:${w};height:${h};`
+                // show.innerHTML = this.ca2
+                // console.log(this.ca2)
+                // quality值越小，所绘制出的图像越模糊 parentNode
+                // const data = canvas.toDataURL( file.type, quality)
+                // const a = document.createElement('a')
+                // console.log(data);
+                // a.download = file.name 
+                // a.href = data
+                document.body.appendChild(canvas)
+                // document.body.appendChild(a)
+                // a.click()
+            }
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <input type="file" onchange="previewFile()"><br>
+    <img src=""  alt="Image preview...">
+
+    <script>
+        function previewFile() {
+            var preview = document.querySelector('img');
+            var file = document.querySelector('input[type=file]').files[0];
+            var reader = new FileReader();
+            console.log(file);
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            // const canvas =  document.createElement('canvas');
+
+            preview.onload = function(){
+                const that = this
+                // 默认按比例压缩
+                let w = that.width
+                let h = that.height
+                // const scale = w / h
+                // w = w
+                // h = (w / scale)
+                let quality = 0.7 // 默认图片质量为0.7
+                // 生成canvas
+                const canvas = document.createElement('canvas')
+                const ctx = canvas.getContext('2d')
+                // 创建属性节点
+                canvas.width = w
+                canvas.height = h
+                // console.log(preview,that);
+                ctx.drawImage(that, 0, 0, w, h)
+                // quality值越小，所绘制出的图像越模糊 parentNode
+                const data = canvas.toDataURL( file.type, quality)
+                const a = document.createElement('a')
+                console.log(data);
+                a.download = file.name 
+                a.href = data
+                document.body.appendChild(canvas)
+                document.body.appendChild(a)
+                a.click()
+            }
+        }
+
+    </script>
+</body>
+
+</html>

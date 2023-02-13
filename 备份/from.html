@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> from 格式化</title>
+    <style>
+        .box {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        textarea,
+        pre {
+            width: 50%;
+            height: 100vh;
+        }
+
+        .buttonbox {
+            /* position: fixed;
+      left: 0;
+      top: 0px; */
+        }
+
+        #copy {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="buttonbox">
+            <button id="" onclick="copyText()">复制</button>
+            <button id="btn" onclick="test()">转化</button>
+        </div>
+        <div class="box">
+            <textarea id="txt"></textarea>
+            <pre id="pre"></pre>
+            <input id="copy" type="text" />
+        </div>
+    </div>
+   
+    <script type="module">
+        import fromMap from './map.js'
+        console.log(btn);
+        var txt = document.getElementById('txt')
+        var pre = document.getElementById('pre')
+        btn.onclick =  test
+        
+        txt.value =
+            `
+input:名字:name | input:名字:name
+input:名字:name | input:名字:name
+input:名字:name  
+`
+        
+
+        // 格式化行
+        function txtdecode(txt) { //
+            const fromlist = []
+            let list = txt.split("\n");
+            for (let i = 0; i < list.length; i++) {
+                const element = list[i];
+                if (!element) {
+                    continue
+                }
+                let rows = element.split('|')
+                if (rows.length == 0) {
+                    continue
+                }
+                let hang = []
+                for (let j = 0; j < rows.length; j++) {
+                    const row = rows[j];
+                    if (row.split(':').length > 0) {
+                        hang.push(row.split(':'))
+                    }
+
+                }
+                fromlist.push(hang)
+            }
+
+            return fromlist
+        }
+        function rowTxt(row) {
+            console.log(row)
+            if (row.length == 2) {
+                let hanglist = [] // 收集拼接一行内部的内容
+                for (let i = 0; i < row.length; i++) {
+                    const item = row[i];
+                    let content1, type = item[0].trim(), title = item[1].trim(), key = item[2].trim()
+                    let ele =  fromMap.get(type)
+                    if (ele) {
+                        ele.attrs.title = title
+                        ele.attrs.key = key
+                        hanglist.push(ele.render())
+                    }
+                    // if (type == 'input') {
+                    //     content1 =
+                    //         `<el-form-item label="${title}:" prop="${key}">
+                    //             <el-input placeholder="请输入${title}" clearable v-model="formData.${key}"></el-input>
+                    //         </el-form-item>`
+                    // } else if (type == 'select') {
+                    //     content1 =
+                    //         ` <el-form-item label="${title}:" prop="${key}">
+                    //         <el-select v-model="formData.${key}" clearable placeholder="请选择${title}"  style="width: 100%">
+                    //             <el-option label="item.label" value="item.value"></el-option>
+                    //         </el-select>
+                    //     </el-form-item>`
+                    // } else if (type == 'txt') {
+                    //     content1 =
+                    //         `<el-form-item label="${title}:" prop="${key}">
+                    //             <el-input type="textarea" :rows="2" placeholder="请输入${title}" v-model="formData.${key}"> </el-input>
+                    //         </el-form-item>`
+                    // } else {
+                    //     content1 = `<el-form-item label="${title}:" prop="${key}">
+                    //             \{\{formData.${key}"\}\}
+                    //         </el-form-item>`
+                    // }
+                    // hanglist.push(content1)
+                }
+                console.log('hanglist', hanglist)
+                let hang =
+`
+    <el-row type="flex" justify="space-between">
+        <el-col :span="11">
+            ${hanglist[0]}
+        </el-col>
+        <el-col :span="11">
+            ${hanglist[1]}
+        </el-col>
+    </el-row>
+`
+
+
+                return hang
+            }
+            if (row.length == 1) {
+                let hanglist = [] // 收集拼接一行内部的内容
+                for (let i = 0; i < row.length; i++) {
+                    const item = row[i];
+                    let content1, type = item[0].trim(), title = item[1].trim(), key = item[2].trim()
+                    let ele =  fromMap.get(type)
+                    if (ele) {
+                        ele.attrs.title = title
+                        ele.attrs.key = key
+                        console.log(ele.render());
+                        hanglist.push(ele.render())
+                    }
+                    // if (type == 'input') {
+                    //     content1 =
+                    //         `<el-form-item label="${title}:" prop="${key}">
+                    //             <el-input placeholder="请输入${title}" clearable v-model="formData.${key}"></el-input>
+                    //         </el-form-item>`
+                    // } else if (type == 'select') {
+                    //     content1 =
+                    //         ` <el-form-item label="${title}:" prop="${key}">
+                    //         <el-select v-model="formData.${key}" clearable placeholder="请选择${title}"  style="width: 100%">
+                    //             <el-option label="item.label" value="item.value"></el-option>
+                    //         </el-select>
+                    //     </el-form-item>`
+                    // } else if (type == 'txt') {
+                    //     content1 =
+                    //         `<el-form-item label="${title}:" prop="${key}">
+                    //             <el-input type="textarea" :rows="2" placeholder="请输入${title}" v-model="formData.${key}"> </el-input>
+                    //         </el-form-item>`
+                    // } else {
+                    //     `<el-form-item label="${title}:" prop="${key}">
+                    //             \{\{formData.${key}"\}\}
+                    //         </el-form-item>`
+                    // }
+                    // hanglist.push(content1)
+                }
+                let hang =
+`
+    <el-row type="flex" justify="space-between">
+        <el-col :span="24">
+            ${hanglist[0]}
+        </el-col>
+    </el-row>
+`
+
+                return hang
+            }
+
+        }
+
+        function copyText() {
+            var text = document.getElementById("pre").innerText;
+            var input = document.getElementById("copy");
+            input.value = text; // 修改文本框的内容
+            input.select(); // 选中文本
+            document.execCommand("copy"); // 执行浏览器复制命令
+            alert("复制成功");
+        }
+
+        function test() {
+            // console.log('txt', txt.value)
+            let list = txtdecode(txt.value)
+            const rows = []
+
+            for (let index = 0; index < list.length; index++) {
+                const row = list[index];
+                if (row.length == 0) {
+                    continue
+                }
+                console.log('rowTxt(row)',rowTxt(row));
+                rows.push(rowTxt(row))
+
+            }
+
+            let content = ''
+            for (let i = 0; i < rows.length; i++) {
+                const element = rows[i];
+                content += element + '\n'
+
+            }
+            let from = 
+            `
+<el-form :model="productInfo" ref="productInfo" label-width="110px" :rules="rules" label-position="left">
+${content}
+</el-form>
+`
+            let shuchu = from
+            pre.innerText = shuchu
+
+        }
+    </script>
+</body>
+
+</html>
