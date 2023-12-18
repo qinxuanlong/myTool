@@ -31,6 +31,12 @@
                <router-link to="/ElementFrom">element from格式化</router-link>
             </el-card>
         </el-col>
+
+        <el-col :span="6">
+            <el-card  class="box-card">
+               <router-link to="/ElementFromTable">element Table 格式化</router-link>
+            </el-card>
+        </el-col>
       </el-row>
     </div>
   </div>
